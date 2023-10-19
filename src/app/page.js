@@ -1,0 +1,291 @@
+"use client";
+import { useRef, useEffect, useState } from "react";
+import {
+  FaceLandmarker,
+  FilesetResolver,
+  DrawingUtils,
+} from "@mediapipe/tasks-vision";
+
+export default function Home() {
+  const [snapButtonText, setSnapbuttonText] = useState("loading");
+  const [disableSnap, setDisableSnap] = useState(true);
+  const videoRef = useRef(null);
+  const photoRef = useRef(null);
+  const [hasPhoto, setHasPhoto] = useState(false);
+
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
+
+  const [faceLandmarker, setFaceLandmarker] = useState(null);
+  const [lastVideoTime, setLastVideoTime] = useState(-1);
+  const [roll, setRoll] = useState(null);
+  const [pitch, setPitch] = useState(null);
+  const [yaw, setYaw] = useState(null);
+  const threshold = 0.05;
+  async function createFaceLandmarker() {
+    const filesetResolver = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.7/wasm"
+    );
+    setFaceLandmarker(
+      await FaceLandmarker.createFromOptions(filesetResolver, {
+        baseOptions: {
+          modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task`,
+          delegate: "GPU",
+        },
+        outputFacialTransformationMatrixes: true,
+        runningMode: "VIDEO",
+        numFaces: 1,
+      })
+    );
+  }
+
+  async function detectLandmark() {
+    let startTimeMs = performance.now();
+    if (
+      videoRef.current &&
+      videoRef.current.videoWidth &&
+      videoRef.current.videoHeight &&
+      videoRef.current.currentTime
+    ) {
+      if (faceLandmarker && lastVideoTime !== videoRef.current.currentTime) {
+        setLastVideoTime(videoRef.current.currentTime);
+        let results = await faceLandmarker.detectForVideo(
+          videoRef.current,
+          startTimeMs
+        );
+        if (
+          results.facialTransformationMatrixes[0] &&
+          results.facialTransformationMatrixes[0].data
+        ) {
+          let R = results.facialTransformationMatrixes[0].data;
+          let tr = Math.atan2(R[9], R[10]).toFixed(2);
+          let tp = Math.atan2(R[8], Math.sqrt(R[9] ** 2 + R[10] ** 2)).toFixed(
+            2
+          );
+          let ty = Math.atan2(R[4], R[0]).toFixed(2);
+
+          setRoll(tr);
+          setPitch(tp);
+          setYaw(ty);
+          if (
+            tr >= -threshold &&
+            tr <= threshold &&
+            tp >= -threshold &&
+            tp <= threshold &&
+            ty >= -threshold &&
+            ty <= threshold
+          ) {
+            setDisableSnap(false);
+          } else setDisableSnap(true);
+        } else setDisableSnap(true);
+      }
+    }
+    requestAnimationFrame(detectLandmark);
+  }
+
+  const getVideo = () => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: width,
+          height: height,
+        },
+      })
+      .then((stream) => {
+        let video = videoRef.current;
+        video.srcObject = stream;
+        video.play();
+        setSnapbuttonText("take photo");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const takePhoto = () => {
+    let video = videoRef.current;
+    let photo = photoRef.current;
+    const twidth = width;
+    const theight = height;
+    photo.height = theight;
+    photo.width = twidth;
+    let ctx = photo.getContext("2d");
+    ctx.drawImage(video, 0, 0, twidth, theight);
+    setHasPhoto(true);
+  };
+
+  const cancelPhoto = () => {
+    let photo = photoRef.current;
+    let ctx = photo.getContext("2d");
+    ctx.clearRect(0, 0, photo.width, photo.height);
+    setHasPhoto(false);
+  };
+
+  useEffect(() => {
+    createFaceLandmarker();
+    getVideo();
+  }, [videoRef]);
+
+  useEffect(() => {
+    detectLandmark();
+  }, [faceLandmarker]);
+
+  useEffect(() => {
+    function setVideoDimensions() {
+      const video = videoRef.current;
+      if (video) {
+        const screenWidth = video.clientWidth;
+        const screenHeight = video.clientHeight;
+        const videoWidth = screenWidth;
+        const videoHeight = screenHeight;
+        setWidth(videoWidth);
+        setHeight(videoHeight);
+      }
+    }
+
+    setVideoDimensions();
+    window.addEventListener("resize", setVideoDimensions);
+
+    return () => {
+      window.removeEventListener("resize", setVideoDimensions);
+    };
+  }, []);
+
+  return (
+    <div className="app">
+      <div className="camera">
+        <div className="logDisplay">
+          <p>roll = {roll}</p>
+          <p>pitch = {pitch}</p>
+          <p>yaw = {yaw}</p>
+        </div>
+        <video className="video" ref={videoRef}></video>
+        <div>
+          <button onClick={takePhoto} disabled={disableSnap}>
+            {snapButtonText}
+          </button>
+        </div>
+        {roll < -threshold && !hasPhoto && (
+          <div className="rollup">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+              />
+            </svg>
+          </div>
+        )}
+        {roll > threshold && !hasPhoto && (
+          <div className="rolldown">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"
+              />
+            </svg>
+          </div>
+        )}
+        <div className="pitch">
+          {pitch > threshold && !hasPhoto && (
+            <div className="pitchleft">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                />
+              </svg>
+            </div>
+          )}
+          {pitch < -threshold && !hasPhoto && (
+            <div className="pitchright">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+        <div className="yaw">
+          {yaw > threshold && !hasPhoto && (
+            <div className="yawleft">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25"
+                />
+              </svg>
+            </div>
+          )}
+          {yaw < -threshold && !hasPhoto && (
+            <div className="yawright">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className={"photo " + (hasPhoto ? "hasPhoto" : "")}>
+        <canvas ref={photoRef}></canvas>
+        <button>save</button>
+        <button className="cancelButton" onClick={cancelPhoto}>
+          cancel
+        </button>
+      </div>
+    </div>
+  );
+}
