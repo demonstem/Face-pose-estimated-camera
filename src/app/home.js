@@ -1,11 +1,9 @@
-"use client";
 import { useRef, useEffect, useState } from "react";
 import {
   FaceLandmarker,
   FilesetResolver,
   DrawingUtils,
 } from "@mediapipe/tasks-vision";
-
 export default function Home() {
   const [snapButtonText, setSnapbuttonText] = useState("loading");
   const [disableSnap, setDisableSnap] = useState(true);
