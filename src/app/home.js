@@ -19,7 +19,7 @@ export default function Home() {
   const [roll, setRoll] = useState(null);
   const [pitch, setPitch] = useState(null);
   const [yaw, setYaw] = useState(null);
-  const threshold = 0.05;
+  const threshold = 0.1;
   async function createFaceLandmarker() {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.7/wasm"
@@ -157,7 +157,11 @@ export default function Home() {
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
         </div>
-        <video className="video" ref={videoRef}></video>
+        <video
+          className="video"
+          ref={videoRef}
+          style={{ transform: "scaleX(-1)" }}
+        ></video>
         <div>
           <button onClick={takePhoto} disabled={disableSnap}>
             {snapButtonText}
@@ -200,7 +204,7 @@ export default function Home() {
           </div>
         )}
         <div className="pitch">
-          {pitch > threshold && !hasPhoto && (
+          {pitch < -threshold && !hasPhoto && (
             <div className="pitchleft">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +222,7 @@ export default function Home() {
               </svg>
             </div>
           )}
-          {pitch < -threshold && !hasPhoto && (
+          {pitch > threshold && !hasPhoto && (
             <div className="pitchright">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +242,7 @@ export default function Home() {
           )}
         </div>
         <div className="yaw">
-          {yaw > threshold && !hasPhoto && (
+          {yaw < -threshold && !hasPhoto && (
             <div className="yawleft">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +260,7 @@ export default function Home() {
               </svg>
             </div>
           )}
-          {yaw < -threshold && !hasPhoto && (
+          {yaw > threshold && !hasPhoto && (
             <div className="yawright">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
