@@ -252,10 +252,6 @@ export default function Home() {
           <p>roll = {roll}</p>
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
-          <p>camWidth = {camWidth}</p>
-          <p>camHeight = {camHeight}</p>
-          <p>width = {width}</p>
-          <p>height = {height}</p>
         </div>
         <video
           className="video"
@@ -270,7 +266,7 @@ export default function Home() {
             ref={facemeshRef}
             style={{
               transform: "scaleX(-1)",
-              height: width > height ? width / (camWidth / camHeight) : height,
+              height: width > height ? height : width / (camWidth / camHeight),
               width: width > height ? height / (camHeight / camWidth) : width,
             }}
           ></canvas>
