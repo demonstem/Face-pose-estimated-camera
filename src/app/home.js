@@ -9,7 +9,9 @@ export default function Home() {
   const [disableSnap, setDisableSnap] = useState(true);
   const videoRef = useRef(null);
   const photoRef = useRef(null);
+  const facemeshRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
+  const [showFacemesh, setShowFacemesh] = useState(true);
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
@@ -75,6 +77,78 @@ export default function Home() {
           ) {
             setDisableSnap(false);
           } else setDisableSnap(true);
+
+          if (showFacemesh) {
+            if (facemeshRef.current) {
+              const ctx = facemeshRef.current.getContext("2d");
+              const drawingUtils = new DrawingUtils(ctx);
+              let twidth, theight;
+              if (width > height) {
+                twidth = height / (3 / 4);
+                theight = height;
+              } else {
+                theight = width / (4 / 3);
+                twidth = width;
+              }
+              ctx.canvas.width = twidth;
+              ctx.canvas.height = theight;
+              // facemeshRef.width = twidth;
+              // facemeshRef.height = theight;
+              ctx.clearRect(
+                0,
+                0,
+                facemeshRef.current.width,
+                facemeshRef.current.height
+              );
+              for (const landmarks of results.faceLandmarks) {
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_TESSELATION,
+                  { color: "#C0C0C070", lineWidth: 1 }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,
+                  { color: "#FF3030" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW,
+                  { color: "#FF3030" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,
+                  { color: "#30FF30" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW,
+                  { color: "#30FF30" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,
+                  { color: "#E0E0E0" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_LIPS,
+                  { color: "#E0E0E0" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS,
+                  { color: "#FF3030" }
+                );
+                drawingUtils.drawConnectors(
+                  landmarks,
+                  FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS,
+                  { color: "#30FF30" }
+                );
+              }
+            }
+          }
         } else setDisableSnap(true);
       }
     }
@@ -103,8 +177,14 @@ export default function Home() {
   const takePhoto = () => {
     let video = videoRef.current;
     let photo = photoRef.current;
-    const twidth = width;
-    const theight = height;
+    let twidth, theight;
+    if (width > height) {
+      twidth = height / (3 / 4);
+      theight = height;
+    } else {
+      theight = width / (4 / 3);
+      twidth = width;
+    }
     photo.height = theight;
     photo.width = twidth;
     let ctx = photo.getContext("2d");
@@ -117,6 +197,26 @@ export default function Home() {
     let ctx = photo.getContext("2d");
     ctx.clearRect(0, 0, photo.width, photo.height);
     setHasPhoto(false);
+  };
+
+  const toggleFacemesh = () => {
+    if (showFacemesh) {
+      setShowFacemesh(false);
+    } else {
+      setShowFacemesh(true);
+    }
+  };
+
+  const saveImage = () => {
+    let downloadLink = document.createElement("a");
+    downloadLink.setAttribute("download", "CanvasAsImage.png");
+    let dataURL = photoRef.current.toDataURL("image/png");
+    let url = dataURL.replace(
+      /^data:image\/png/,
+      "data:application/octet-stream"
+    );
+    downloadLink.setAttribute("href", url);
+    downloadLink.click();
   };
 
   useEffect(() => {
@@ -160,11 +260,25 @@ export default function Home() {
         <video
           className="video"
           ref={videoRef}
-          style={{ transform: "scaleX(-1)" }}
+          style={{
+            transform: "scaleX(-1)",
+          }}
         ></video>
+        {showFacemesh && (
+          <canvas
+            className="facemesh"
+            ref={facemeshRef}
+            style={{
+              transform: "scaleX(-1)",
+            }}
+          ></canvas>
+        )}
         <div>
           <button onClick={takePhoto} disabled={disableSnap}>
             {snapButtonText}
+          </button>
+          <button className="facemeshButton" onClick={toggleFacemesh}>
+            Toggle Facemesh
           </button>
         </div>
         {roll < -threshold && !hasPhoto && (
@@ -282,8 +396,14 @@ export default function Home() {
       </div>
 
       <div className={"photo " + (hasPhoto ? "hasPhoto" : "")}>
-        <canvas ref={photoRef}></canvas>
-        <button>save</button>
+        <canvas
+          className="photoCanvas"
+          ref={photoRef}
+          style={{
+            transform: "scaleX(-1)",
+          }}
+        ></canvas>
+        <button onClick={saveImage}>save</button>
         <button className="cancelButton" onClick={cancelPhoto}>
           cancel
         </button>
