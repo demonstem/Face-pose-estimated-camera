@@ -15,8 +15,8 @@ export default function Home() {
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
-  const [camWidth, setCamWidth] = useState(4);
-  const [camHeight, setCamHeight] = useState(3);
+  // const [camWidth, setCamWidth] = useState(4);
+  // const [camHeight, setCamHeight] = useState(3);
 
   const [faceLandmarker, setFaceLandmarker] = useState(null);
   const [lastVideoTime, setLastVideoTime] = useState(-1);
@@ -87,10 +87,12 @@ export default function Home() {
               const drawingUtils = new DrawingUtils(ctx);
               let twidth, theight;
               if (width > height) {
-                twidth = height / (camHeight / camWidth);
+                // twidth = height / (camHeight / camWidth);
+                twidth = height / (16 / 9);
                 theight = height;
               } else {
-                theight = width / (camWidth / camHeight);
+                // theight = width / (camWidth / camHeight);
+                theight = width / (9 / 16);
                 twidth = width;
               }
               ctx.canvas.width = twidth;
@@ -160,8 +162,10 @@ export default function Home() {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          width: width,
-          height: height,
+          // width: width,
+          // height: height,
+          width: { ideal: 1080 },
+          height: { ideal: 1920 },
         },
       })
       .then((stream) => {
@@ -171,8 +175,8 @@ export default function Home() {
         setSnapbuttonText("take photo");
         const track = stream.getVideoTracks()[0];
         const settings = track.getSettings();
-        setCamWidth(settings.width);
-        setCamHeight(settings.height);
+        // setCamWidth(settings.width);
+        // setCamHeight(settings.height);
       })
       .catch((err) => {
         console.error(err);
@@ -183,13 +187,17 @@ export default function Home() {
     let video = videoRef.current;
     let photo = photoRef.current;
     let twidth, theight;
-    if (width > height) {
-      twidth = height / (camHeight / camWidth);
-      theight = height;
-    } else {
-      theight = width / (camWidth / camHeight);
-      twidth = width;
-    }
+    // if (width > height) {
+    //   // twidth = height / (camHeight / camWidth);
+    //   twidth = height / (16 / 9);
+    //   theight = height;
+    // } else {
+    //   // theight = width / (camWidth / camHeight);
+    //   theight = width / (9 / 16);
+    //   twidth = width;
+    // }
+    twidth = video.clientWidth;
+    theight = video.clientHeight;
     photo.height = theight;
     photo.width = twidth;
     let ctx = photo.getContext("2d");
@@ -266,8 +274,10 @@ export default function Home() {
             ref={facemeshRef}
             style={{
               transform: "scaleX(-1)",
-              height: width > height ? width / (camWidth / camHeight) : height,
-              width: width > height ? height / (camHeight / camWidth) : width,
+              // height: width > height ? width / (camWidth / camHeight) : height,
+              height: width > height ? width / (9 / 16) : height,
+              // width: width > height ? height / (camHeight / camWidth) : width,
+              width: width > height ? height / (16 / 9) : width,
             }}
           ></canvas>
         )}
