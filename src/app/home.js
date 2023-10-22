@@ -266,7 +266,7 @@ export default function Home() {
             ref={facemeshRef}
             style={{
               transform: "scaleX(-1)",
-              height: width > height ? height : width / (camWidth / camHeight),
+              height: width > height ? width / (camWidth / camHeight) : height,
               width: width > height ? height / (camHeight / camWidth) : width,
             }}
           ></canvas>
