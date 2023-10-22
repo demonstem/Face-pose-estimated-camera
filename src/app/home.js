@@ -214,7 +214,7 @@ export default function Home() {
 
   const saveImage = () => {
     let downloadLink = document.createElement("a");
-    downloadLink.setAttribute("download", "CanvasAsImage.png");
+    downloadLink.setAttribute("download", "face.png");
     let dataURL = photoRef.current.toDataURL("image/png");
     let url = dataURL.replace(
       /^data:image\/png/,
@@ -245,15 +245,6 @@ export default function Home() {
     detectLandmark();
   }, [faceLandmarker]);
 
-  // useEffect(() => {
-  //   setVideoDimensions();
-  //   window.addEventListener("resize", setVideoDimensions);
-  //   window.addEventListener("load", handleWindowLoad);
-  //   return () => {
-  //     window.removeEventListener("resize", setVideoDimensions);
-  //   };
-  // }, []);
-
   return (
     <div className="app">
       <div className="camera">
@@ -279,7 +270,7 @@ export default function Home() {
             ref={facemeshRef}
             style={{
               transform: "scaleX(-1)",
-              height: height,
+              height: width > height ? width / (camWidth / camHeight) : height,
               width: width > height ? height / (camHeight / camWidth) : width,
             }}
           ></canvas>
