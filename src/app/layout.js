@@ -4,8 +4,9 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Open camera",
-  description: "RPY estimation on browser",
+  title: "Face Pose Estimated Camera",
+  description:
+    "Camera with roll, pitch, yaw estimation using mediapipe facelandmark",
 };
 
 export default function RootLayout({ children }) {
