@@ -42,6 +42,7 @@ export default function Home() {
   }
 
   async function detectLandmark() {
+    setVideoDimensions();
     let startTimeMs = performance.now();
     if (
       videoRef.current &&
@@ -94,8 +95,6 @@ export default function Home() {
               }
               ctx.canvas.width = twidth;
               ctx.canvas.height = theight;
-              // facemeshRef.current.width = twidth;
-              // facemeshRef.current.height = theight;
               ctx.clearRect(
                 0,
                 0,
@@ -174,7 +173,6 @@ export default function Home() {
         const settings = track.getSettings();
         setCamWidth(settings.width);
         setCamHeight(settings.height);
-        console.log(settings.width, settings.height);
       })
       .catch((err) => {
         console.error(err);
@@ -226,6 +224,18 @@ export default function Home() {
     downloadLink.click();
   };
 
+  function setVideoDimensions() {
+    const video = videoRef.current;
+    if (video) {
+      const screenWidth = video.clientWidth;
+      const screenHeight = video.clientHeight;
+      const videoWidth = screenWidth;
+      const videoHeight = screenHeight;
+      setWidth(videoWidth);
+      setHeight(videoHeight);
+    }
+  }
+
   useEffect(() => {
     createFaceLandmarker();
     getVideo();
@@ -235,26 +245,14 @@ export default function Home() {
     detectLandmark();
   }, [faceLandmarker]);
 
-  useEffect(() => {
-    function setVideoDimensions() {
-      const video = videoRef.current;
-      if (video) {
-        const screenWidth = video.clientWidth;
-        const screenHeight = video.clientHeight;
-        const videoWidth = screenWidth;
-        const videoHeight = screenHeight;
-        setWidth(videoWidth);
-        setHeight(videoHeight);
-      }
-    }
-
-    setVideoDimensions();
-    window.addEventListener("resize", setVideoDimensions);
-
-    return () => {
-      window.removeEventListener("resize", setVideoDimensions);
-    };
-  }, []);
+  // useEffect(() => {
+  //   setVideoDimensions();
+  //   window.addEventListener("resize", setVideoDimensions);
+  //   window.addEventListener("load", handleWindowLoad);
+  //   return () => {
+  //     window.removeEventListener("resize", setVideoDimensions);
+  //   };
+  // }, []);
 
   return (
     <div className="app">
@@ -265,6 +263,8 @@ export default function Home() {
           <p>yaw = {yaw}</p>
           <p>camWidth = {camWidth}</p>
           <p>camHeight = {camHeight}</p>
+          <p>width = {width}</p>
+          <p>height = {height}</p>
         </div>
         <video
           className="video"
@@ -279,6 +279,8 @@ export default function Home() {
             ref={facemeshRef}
             style={{
               transform: "scaleX(-1)",
+              height: height,
+              width: width > height ? height / (camHeight / camWidth) : width,
             }}
           ></canvas>
         )}
