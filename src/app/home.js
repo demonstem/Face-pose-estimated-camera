@@ -15,6 +15,8 @@ export default function Home() {
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
+  const [camWidth, setCamWidth] = useState(4);
+  const [camHeight, setCamHeight] = useState(3);
 
   const [faceLandmarker, setFaceLandmarker] = useState(null);
   const [lastVideoTime, setLastVideoTime] = useState(-1);
@@ -84,10 +86,10 @@ export default function Home() {
               const drawingUtils = new DrawingUtils(ctx);
               let twidth, theight;
               if (width > height) {
-                twidth = height / (3 / 4);
+                twidth = height / (camHeight / camWidth);
                 theight = height;
               } else {
-                theight = width / (4 / 3);
+                theight = width / (camWidth / camHeight);
                 twidth = width;
               }
               ctx.canvas.width = twidth;
@@ -168,6 +170,11 @@ export default function Home() {
         video.srcObject = stream;
         video.play();
         setSnapbuttonText("take photo");
+        const track = stream.getVideoTracks()[0];
+        const settings = track.getSettings();
+        setCamWidth(settings.width);
+        setCamHeight(settings.height);
+        console.log(settings.width, settings.height);
       })
       .catch((err) => {
         console.error(err);
@@ -179,10 +186,10 @@ export default function Home() {
     let photo = photoRef.current;
     let twidth, theight;
     if (width > height) {
-      twidth = height / (3 / 4);
+      twidth = height / (camHeight / camWidth);
       theight = height;
     } else {
-      theight = width / (4 / 3);
+      theight = width / (camWidth / camHeight);
       twidth = width;
     }
     photo.height = theight;
