@@ -94,8 +94,8 @@ export default function Home() {
               }
               ctx.canvas.width = twidth;
               ctx.canvas.height = theight;
-              // facemeshRef.width = twidth;
-              // facemeshRef.height = theight;
+              // facemeshRef.current.width = twidth;
+              // facemeshRef.current.height = theight;
               ctx.clearRect(
                 0,
                 0,
@@ -263,6 +263,8 @@ export default function Home() {
           <p>roll = {roll}</p>
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
+          <p>camWidth = {camWidth}</p>
+          <p>camHeight = {camHeight}</p>
         </div>
         <video
           className="video"
