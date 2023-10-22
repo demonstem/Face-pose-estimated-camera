@@ -171,12 +171,14 @@ export default function Home() {
       .then((stream) => {
         let video = videoRef.current;
         video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          const track = stream.getVideoTracks()[0];
+          const settings = track.getSettings();
+          setCamWidth(settings.width);
+          setCamHeight(settings.height);
+        };
         video.play();
         setSnapbuttonText("take photo");
-        const track = stream.getVideoTracks()[0];
-        const settings = track.getSettings();
-        setCamWidth(settings.width);
-        setCamHeight(settings.height);
       })
       .catch((err) => {
         console.error(err);
@@ -260,6 +262,8 @@ export default function Home() {
           <p>roll = {roll}</p>
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
+          <p>camWidth = {camWidth}</p>
+          <p>camHeight = {camHeight}</p>
         </div>
         <video
           className="video"
