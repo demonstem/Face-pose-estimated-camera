@@ -162,10 +162,8 @@ export default function Home() {
     navigator.mediaDevices
       .getUserMedia({
         video: {
-          // width: width,
-          // height: height,
-          width: { ideal: width },
-          height: { ideal: height },
+          width: width,
+          height: height,
           // width: { ideal: 1080 },
           // height: { ideal: 1920 },
         },
