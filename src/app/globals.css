@@ -49,7 +49,7 @@
 }
 
 video {
-  width: 100vh;
+  width: 100%;
   /* max-width: 100vh; */
   height: auto;
   max-height: 100vh;
