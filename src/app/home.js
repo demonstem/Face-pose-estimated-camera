@@ -262,8 +262,10 @@ export default function Home() {
           <p>roll = {roll}</p>
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
+          {/* <p>width = {width}</p>
+          <p>height = {height}</p>
           <p>camWidth = {camWidth}</p>
-          <p>camHeight = {camHeight}</p>
+          <p>camHeight = {camHeight}</p> */}
         </div>
         <video
           className="video"
