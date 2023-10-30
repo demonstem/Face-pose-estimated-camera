@@ -12,6 +12,7 @@ export default function Home() {
   const facemeshRef = useRef(null);
   const [hasPhoto, setHasPhoto] = useState(false);
   const [showFacemesh, setShowFacemesh] = useState(true);
+  const [hasResult, setHasResult] = useState(false);
 
   const [width, setWidth] = useState(null);
   const [height, setHeight] = useState(null);
@@ -60,6 +61,7 @@ export default function Home() {
           results.facialTransformationMatrixes[0] &&
           results.facialTransformationMatrixes[0].data
         ) {
+          setHasResult(true);
           let R = results.facialTransformationMatrixes[0].data;
           let tr = Math.atan2(R[9], R[10]).toFixed(2);
           let tp = Math.atan2(R[8], Math.sqrt(R[9] ** 2 + R[10] ** 2)).toFixed(
@@ -152,7 +154,10 @@ export default function Home() {
               }
             }
           }
-        } else setDisableSnap(true);
+        } else {
+          setHasResult(false);
+          setDisableSnap(true);
+        }
       }
     }
     requestAnimationFrame(detectLandmark);
@@ -274,7 +279,7 @@ export default function Home() {
             transform: "scaleX(-1)",
           }}
         ></video>
-        {showFacemesh && (
+        {showFacemesh && hasResult && (
           <canvas
             className="facemesh"
             ref={facemeshRef}
