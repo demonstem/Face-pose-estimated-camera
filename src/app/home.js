@@ -191,7 +191,7 @@ export default function Home() {
           height: height,
           // width: { ideal: 1080 },
           // height: { ideal: 1920 },
-          facingMode: { facingMode },
+          facingMode: { exact: facingMode },
         },
       })
       .then((stream) => {
@@ -282,7 +282,7 @@ export default function Home() {
   useEffect(() => {
     createFaceLandmarker();
     getVideo();
-  }, [videoRef]);
+  }, [videoRef, facingMode]);
 
   useEffect(() => {
     detectLandmark();
