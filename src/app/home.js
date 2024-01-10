@@ -18,13 +18,18 @@ export default function Home() {
   const [height, setHeight] = useState(null);
   const [camWidth, setCamWidth] = useState(4);
   const [camHeight, setCamHeight] = useState(3);
+  const [facingMode, setFacingMode] = useState("user");
 
   const [faceLandmarker, setFaceLandmarker] = useState(null);
   const [lastVideoTime, setLastVideoTime] = useState(-1);
   const [roll, setRoll] = useState(null);
   const [pitch, setPitch] = useState(null);
   const [yaw, setYaw] = useState(null);
-  const threshold = 0.1;
+  const [eyeUp, setEyeUp] = useState(1);
+  const [eyeIn, setEyeIn] = useState(1);
+  const [eyeOut, setEyeOut] = useState(1);
+  const [eyeDown, setEyeDown] = useState(1);
+  const threshold = 0.05;
   async function createFaceLandmarker() {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.7/wasm"
@@ -36,6 +41,7 @@ export default function Home() {
           delegate: "GPU",
         },
         outputFacialTransformationMatrixes: true,
+        outputFaceBlendshapes: true,
         runningMode: "VIDEO",
         numFaces: 1,
       })
@@ -68,7 +74,17 @@ export default function Home() {
             2
           );
           let ty = Math.atan2(R[4], R[0]).toFixed(2);
+          // console.log(results.faceBlendshapes[0].categories);
+          let blendshapes = results.faceBlendshapes[0].categories;
+          let eu = blendshapes[17].score.toFixed(2);
+          let ei = blendshapes[13].score.toFixed(2);
+          let eo = blendshapes[15].score.toFixed(2);
+          let ed = blendshapes[11].score.toFixed(2);
 
+          setEyeUp(eu);
+          setEyeIn(ei);
+          setEyeOut(eo);
+          setEyeDown(ed);
           setRoll(tr);
           setPitch(tp);
           setYaw(ty);
@@ -171,6 +187,7 @@ export default function Home() {
           height: height,
           // width: { ideal: 1080 },
           // height: { ideal: 1920 },
+          facingMode: facingMode,
         },
       })
       .then((stream) => {
@@ -239,6 +256,15 @@ export default function Home() {
     downloadLink.click();
   };
 
+  const togleFacingMode = () => {
+    if (facingMode === "environment") {
+      setFacingMode("user");
+    } else {
+      setFacingMode("environment");
+    }
+    // getVideo();
+  };
+
   function setVideoDimensions() {
     const video = videoRef.current;
     if (video) {
@@ -254,7 +280,7 @@ export default function Home() {
   useEffect(() => {
     createFaceLandmarker();
     getVideo();
-  }, [videoRef]);
+  }, [videoRef, facingMode]);
 
   useEffect(() => {
     detectLandmark();
@@ -263,15 +289,23 @@ export default function Home() {
   return (
     <div className="app">
       <div className="camera">
+        {/* display values */}
         <div className="logDisplay">
           <p>roll = {roll}</p>
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
+          <p>up = {eyeUp}</p>
+          <p>down = {eyeDown}</p>
+          <p>in = {eyeIn}</p>
+          <p>out = {eyeOut}</p>
+          <p>mode = {facingMode}</p>
           {/* <p>width = {width}</p>
           <p>height = {height}</p>
           <p>camWidth = {camWidth}</p>
           <p>camHeight = {camHeight}</p> */}
         </div>
+
+        {/* video */}
         <video
           className="video"
           ref={videoRef}
@@ -279,6 +313,8 @@ export default function Home() {
             transform: "scaleX(-1)",
           }}
         ></video>
+
+        {/* facemesh */}
         {showFacemesh && hasResult && (
           <canvas
             className="facemesh"
@@ -292,6 +328,8 @@ export default function Home() {
             }}
           ></canvas>
         )}
+
+        {/* buttons */}
         <div>
           <button onClick={takePhoto} disabled={disableSnap}>
             {snapButtonText}
@@ -299,7 +337,12 @@ export default function Home() {
           <button className="facemeshButton" onClick={toggleFacemesh}>
             Toggle Facemesh
           </button>
+          <button className="facemodeButton" onClick={togleFacingMode}>
+            switch camera
+          </button>
         </div>
+
+        {/* instructions */}
         {roll < -threshold && !hasPhoto && (
           <div className="rollup">
             <svg
@@ -414,6 +457,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* photo view */}
       <div className={"photo " + (hasPhoto ? "hasPhoto" : "")}>
         <canvas
           className="photoCanvas"

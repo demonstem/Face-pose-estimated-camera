@@ -91,6 +91,18 @@ Button {
   cursor: pointer;
 }
 
+.facemodeButton {
+  position: absolute;
+  bottom: 20px;
+  left: 297px;
+  appearance: none;
+  border: none;
+  outline: none;
+  padding: 8px 16px;
+  font-size: 24 px;
+  cursor: pointer;
+}
+
 .photoCanvas {
   width: auto;
   height: auto;
