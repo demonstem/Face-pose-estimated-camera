@@ -25,10 +25,14 @@ export default function Home() {
   const [roll, setRoll] = useState(null);
   const [pitch, setPitch] = useState(null);
   const [yaw, setYaw] = useState(null);
-  const [eyeUp, setEyeUp] = useState(1);
-  const [eyeIn, setEyeIn] = useState(1);
-  const [eyeOut, setEyeOut] = useState(1);
-  const [eyeDown, setEyeDown] = useState(1);
+  const [leftEyeUp, setLeftEyeUp] = useState(1);
+  const [leftEyeIn, setLeftEyeIn] = useState(1);
+  const [leftEyeOut, setLeftEyeOut] = useState(1);
+  const [leftEyeDown, setLeftEyeDown] = useState(1);
+  const [rightEyeUp, setRightEyeUp] = useState(1);
+  const [rightEyeIn, setRightEyeIn] = useState(1);
+  const [rightEyeOut, setRightEyeOut] = useState(1);
+  const [rightEyeDown, setRightEyeDown] = useState(1);
   const threshold = 0.05;
   async function createFaceLandmarker() {
     const filesetResolver = await FilesetResolver.forVisionTasks(
@@ -76,15 +80,22 @@ export default function Home() {
           let ty = Math.atan2(R[4], R[0]).toFixed(2);
           // console.log(results.faceBlendshapes[0].categories);
           let blendshapes = results.faceBlendshapes[0].categories;
-          let eu = blendshapes[17].score.toFixed(2);
-          let ei = blendshapes[13].score.toFixed(2);
-          let eo = blendshapes[15].score.toFixed(2);
-          let ed = blendshapes[11].score.toFixed(2);
-
-          setEyeUp(eu);
-          setEyeIn(ei);
-          setEyeOut(eo);
-          setEyeDown(ed);
+          let leu = blendshapes[17].score.toFixed(2);
+          let lei = blendshapes[13].score.toFixed(2);
+          let leo = blendshapes[15].score.toFixed(2);
+          let led = blendshapes[11].score.toFixed(2);
+          let reu = blendshapes[18].score.toFixed(2);
+          let rei = blendshapes[14].score.toFixed(2);
+          let reo = blendshapes[16].score.toFixed(2);
+          let red = blendshapes[12].score.toFixed(2);
+          setLeftEyeUp(leu);
+          setLeftEyeIn(lei);
+          setLeftEyeOut(leo);
+          setLeftEyeDown(led);
+          setRightEyeUp(reu);
+          setRightEyeIn(rei);
+          setRightEyeOut(reo);
+          setRightEyeDown(red);
           setRoll(tr);
           setPitch(tp);
           setYaw(ty);
@@ -94,7 +105,15 @@ export default function Home() {
             tp >= -threshold &&
             tp <= threshold &&
             ty >= -threshold &&
-            ty <= threshold
+            ty <= threshold &&
+            leu <= threshold + 0.1 &&
+            reu <= threshold + 0.1 &&
+            lei <= threshold + 0.1 &&
+            rei <= threshold + 0.1 &&
+            leo <= threshold + 0.1 &&
+            reo <= threshold + 0.1 &&
+            led <= threshold + 0.1 &&
+            red <= threshold + 0.1
           ) {
             setDisableSnap(false);
           } else setDisableSnap(true);
@@ -300,10 +319,14 @@ export default function Home() {
           <p>roll = {roll}</p>
           <p>pitch = {pitch}</p>
           <p>yaw = {yaw}</p>
-          <p>up = {eyeUp}</p>
-          <p>down = {eyeDown}</p>
-          <p>in = {eyeIn}</p>
-          <p>out = {eyeOut}</p>
+          <p>lup = {leftEyeUp}</p>
+          <p>ldown = {leftEyeDown}</p>
+          <p>lin = {leftEyeIn}</p>
+          <p>lout = {leftEyeOut}</p>
+          <p>rup = {rightEyeUp}</p>
+          <p>rdown = {rightEyeDown}</p>
+          <p>rin = {rightEyeIn}</p>
+          <p>rout = {rightEyeOut}</p>
           <p>mode = {facingMode}</p>
           {/* <p>width = {width}</p>
           <p>height = {height}</p>
