@@ -180,6 +180,10 @@ export default function Home() {
   }
 
   const getVideo = () => {
+    if (videoRef.current.srcObject) {
+      const tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach((track) => track.stop());
+    }
     navigator.mediaDevices
       .getUserMedia({
         video: {
@@ -187,7 +191,7 @@ export default function Home() {
           height: height,
           // width: { ideal: 1080 },
           // height: { ideal: 1920 },
-          facingMode: { exact: facingMode },
+          facingMode: { facingMode },
         },
       })
       .then((stream) => {
