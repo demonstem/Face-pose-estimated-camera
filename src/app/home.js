@@ -18,7 +18,7 @@ export default function Home() {
   const [height, setHeight] = useState(null);
   const [camWidth, setCamWidth] = useState(4);
   const [camHeight, setCamHeight] = useState(3);
-  const [facingMode, setFacingMode] = useState("environment");
+  const [facingMode, setFacingMode] = useState("user");
 
   const [faceLandmarker, setFaceLandmarker] = useState(null);
   const [lastVideoTime, setLastVideoTime] = useState(-1);
@@ -187,7 +187,7 @@ export default function Home() {
           height: height,
           // width: { ideal: 1080 },
           // height: { ideal: 1920 },
-          facingMode: facingMode,
+          facingMode: { exact: facingMode },
         },
       })
       .then((stream) => {
