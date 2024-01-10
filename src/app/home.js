@@ -263,7 +263,8 @@ export default function Home() {
   const togleFacingMode = () => {
     setFacingMode((prevFacingMode) =>
       prevFacingMode == "environment" ? "user" : "environment"
-    ).then(() => getVideo());
+    );
+    // getVideo();
   };
 
   function setVideoDimensions() {
@@ -282,6 +283,10 @@ export default function Home() {
     createFaceLandmarker();
     getVideo();
   }, [videoRef]);
+
+  useEffect(() => {
+    getVideo();
+  }, [facingMode]);
 
   useEffect(() => {
     detectLandmark();
