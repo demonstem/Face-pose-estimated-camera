@@ -282,7 +282,7 @@ export default function Home() {
   useEffect(() => {
     createFaceLandmarker();
     getVideo();
-  }, [videoRef, facingMode]);
+  }, [videoRef]);
 
   useEffect(() => {
     detectLandmark();
