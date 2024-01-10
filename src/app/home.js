@@ -262,9 +262,8 @@ export default function Home() {
 
   const togleFacingMode = () => {
     setFacingMode((prevFacingMode) =>
-      prevFacingMode === "environment" ? "user" : "environment"
-    );
-    getVideo();
+      prevFacingMode == "environment" ? "user" : "environment"
+    ).then(() => getVideo());
   };
 
   function setVideoDimensions() {
