@@ -316,7 +316,7 @@ export default function Home() {
           className="video"
           ref={videoRef}
           style={{
-            transform: "scaleX(-1)",
+            transform: facingMode == "user" ? "scaleX(-1)" : "",
           }}
         ></video>
 
