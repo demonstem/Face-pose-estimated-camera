@@ -326,7 +326,7 @@ export default function Home() {
             className="facemesh"
             ref={facemeshRef}
             style={{
-              transform: "scaleX(-1)",
+              transform: facingMode == "user" ? "scaleX(-1)" : "",
               height: height > width ? width / (camWidth / camHeight) : height,
               // height: width > height ? width / (9 / 16) : height,
               width: width > height ? height / (camHeight / camWidth) : width,
