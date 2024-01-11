@@ -106,14 +106,14 @@ export default function Home() {
             tp <= threshold &&
             ty >= -threshold &&
             ty <= threshold &&
-            leu <= threshold + 0.1 &&
-            reu <= threshold + 0.1 &&
-            lei <= threshold + 0.1 &&
-            rei <= threshold + 0.1 &&
-            leo <= threshold + 0.1 &&
-            reo <= threshold + 0.1 &&
-            led <= threshold + 0.1 &&
-            red <= threshold + 0.1
+            leu <= threshold + 0.25 &&
+            reu <= threshold + 0.25 &&
+            lei <= threshold + 0.25 &&
+            rei <= threshold + 0.25 &&
+            leo <= threshold + 0.25 &&
+            reo <= threshold + 0.25 &&
+            led <= threshold + 0.25 &&
+            red <= threshold + 0.25
           ) {
             setDisableSnap(false);
           } else setDisableSnap(true);
