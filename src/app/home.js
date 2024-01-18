@@ -301,11 +301,11 @@ export default function Home() {
   useEffect(() => {
     createFaceLandmarker();
     getVideo();
-  }, [videoRef]);
+  }, [videoRef, facingMode]);
 
-  useEffect(() => {
-    getVideo();
-  }, [facingMode]);
+  // useEffect(() => {
+  //   getVideo();
+  // }, [facingMode]);
 
   useEffect(() => {
     detectLandmark();
