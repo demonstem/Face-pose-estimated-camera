@@ -208,3 +208,13 @@ Button {
   align-self: center;
   justify-self: center;
 }
+
+.eye {
+  top: 10px;
+  width: auto;
+  height: auto;
+  position: fixed;
+  background-color: black;
+  color: white;
+  z-index: 2;
+}
