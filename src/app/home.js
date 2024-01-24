@@ -485,14 +485,14 @@ export default function Home() {
           )}
         </div>
         <div className="eye">
-          {leftEyeUp <= threshold + 0.25 &&
-            rightEyeUp <= threshold + 0.25 &&
-            leftEyeIn <= threshold + 0.25 &&
-            rightEyeIn <= threshold + 0.25 &&
-            leftEyeOut <= threshold + 0.25 &&
-            rightEyeOut <= threshold + 0.25 &&
-            leftEyeDown <= threshold + 0.25 &&
-            rightEyeDown <= threshold + 0.25 && <>กรุณามองกล้อง</>}
+          {leftEyeUp > threshold + 0.25 &&
+            rightEyeUp > threshold + 0.25 &&
+            leftEyeIn > threshold + 0.25 &&
+            rightEyeIn > threshold + 0.25 &&
+            leftEyeOut > threshold + 0.25 &&
+            rightEyeOut > threshold + 0.25 &&
+            leftEyeDown > threshold + 0.25 &&
+            rightEyeDown > threshold + 0.25 && <>กรุณามองกล้อง</>}
         </div>
       </div>
 
