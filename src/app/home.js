@@ -34,6 +34,7 @@ export default function Home() {
   const [rightEyeOut, setRightEyeOut] = useState(1);
   const [rightEyeDown, setRightEyeDown] = useState(1);
   const threshold = 0.05;
+  const eyeOffset = eyeOffset;
   async function createFaceLandmarker() {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.7/wasm"
@@ -106,14 +107,14 @@ export default function Home() {
             tp <= threshold &&
             ty >= -threshold &&
             ty <= threshold &&
-            leu <= threshold + 0.25 &&
-            reu <= threshold + 0.25 &&
-            lei <= threshold + 0.25 &&
-            rei <= threshold + 0.25 &&
-            leo <= threshold + 0.25 &&
-            reo <= threshold + 0.25 &&
-            led <= threshold + 0.25 &&
-            red <= threshold + 0.25
+            leu <= threshold + eyeOffset &&
+            reu <= threshold + eyeOffset &&
+            lei <= threshold + eyeOffset &&
+            rei <= threshold + eyeOffset &&
+            leo <= threshold + eyeOffset &&
+            reo <= threshold + eyeOffset &&
+            led <= threshold + eyeOffset &&
+            red <= threshold + eyeOffset
           ) {
             setDisableSnap(false);
           } else setDisableSnap(true);
@@ -485,14 +486,14 @@ export default function Home() {
           )}
         </div>
         <div className="eye">
-          {leftEyeUp > threshold + 0.25 &&
-            rightEyeUp > threshold + 0.25 &&
-            leftEyeIn > threshold + 0.25 &&
-            rightEyeIn > threshold + 0.25 &&
-            leftEyeOut > threshold + 0.25 &&
-            rightEyeOut > threshold + 0.25 &&
-            leftEyeDown > threshold + 0.25 &&
-            rightEyeDown > threshold + 0.25 && <>กรุณามองกล้อง</>}
+          {leftEyeUp > threshold + eyeOffset ||
+            rightEyeUp > threshold + eyeOffset ||
+            leftEyeIn > threshold + eyeOffset ||
+            rightEyeIn > threshold + eyeOffset ||
+            leftEyeOut > threshold + eyeOffset ||
+            rightEyeOut > threshold + eyeOffset ||
+            leftEyeDown > threshold + eyeOffset ||
+            rightEyeDown > threshold + eyeOffset || <>กรุณามองกล้อง</>}
         </div>
       </div>
 
