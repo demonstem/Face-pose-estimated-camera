@@ -34,7 +34,7 @@ export default function Home() {
   const [rightEyeOut, setRightEyeOut] = useState(1);
   const [rightEyeDown, setRightEyeDown] = useState(1);
   const threshold = 0.05;
-  const eyeOffset = eyeOffset;
+  const eyeOffset = 0.25;
   async function createFaceLandmarker() {
     const filesetResolver = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.7/wasm"
