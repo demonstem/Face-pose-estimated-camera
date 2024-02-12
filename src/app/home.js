@@ -410,80 +410,92 @@ export default function Home() {
           </div>
         )}
         <div className="pitch">
-          {pitch < -threshold && !hasPhoto && (
-            <div className="pitchleft">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                />
-              </svg>
-            </div>
-          )}
-          {pitch > threshold && !hasPhoto && (
-            <div className="pitchright">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </div>
-          )}
+          {facingMode == "user"
+            ? pitch < -threshold
+            : pitch > threshold &&
+              !hasPhoto && (
+                <div className="pitchleft">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                    />
+                  </svg>
+                </div>
+              )}
+          {facingMode == "user"
+            ? pitch > threshold
+            : pitch < -threshold &&
+              !hasPhoto && (
+                <div className="pitchright">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </div>
+              )}
         </div>
         <div className="yaw">
-          {yaw < -threshold && !hasPhoto && (
-            <div className="yawleft">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25"
-                />
-              </svg>
-            </div>
-          )}
-          {yaw > threshold && !hasPhoto && (
-            <div className="yawright">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25"
-                />
-              </svg>
-            </div>
-          )}
+          {facingMode == "user"
+            ? yaw < -threshold
+            : yaw > threshold &&
+              !hasPhoto && (
+                <div className="yawleft">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25"
+                    />
+                  </svg>
+                </div>
+              )}
+          {facingMode == "user"
+            ? yaw > threshold
+            : yaw < -threshold &&
+              !hasPhoto && (
+                <div className="yawright">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 4.5l15 15m0 0V8.25m0 11.25H8.25"
+                    />
+                  </svg>
+                </div>
+              )}
         </div>
         <div className="eye">
           {leftEyeUp > threshold + eyeOffset ||
