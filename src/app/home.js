@@ -499,14 +499,14 @@ export default function Home() {
         </div>
         <div className="eye">
           {!(
-            leftEyeUp > threshold + eyeOffset ||
-            rightEyeUp > threshold + eyeOffset ||
-            leftEyeIn > threshold + eyeOffset ||
-            rightEyeIn > threshold + eyeOffset ||
-            leftEyeOut > threshold + eyeOffset ||
-            rightEyeOut > threshold + eyeOffset ||
-            leftEyeDown > threshold + eyeOffset ||
-            rightEyeDown > threshold + eyeOffset
+            leftEyeUp < threshold + eyeOffset ||
+            rightEyeUp < threshold + eyeOffset ||
+            leftEyeIn < threshold + eyeOffset ||
+            rightEyeIn < threshold + eyeOffset ||
+            leftEyeOut < threshold + eyeOffset ||
+            rightEyeOut < threshold + eyeOffset ||
+            leftEyeDown < threshold + eyeOffset ||
+            rightEyeDown < threshold + eyeOffset
           ) && <>กรุณามองกล้อง</>}
         </div>
       </div>
